@@ -266,3 +266,100 @@ Implemented:
 - health check endpoint: `GET /health`
 
 ---
+
+## Day 2 — Status (Prisma + First Domain (User))
+
+Implemented:
+
+- Prisma setup (`@prisma/client`, `prisma`)
+- PostgreSQL connection via Docker
+- Environment configuration (`DATABASE_URL`)
+- First Prisma schema (`User` model)
+- Initial database migration
+- PrismaModule + PrismaService (NestJS integration)
+- First GraphQL domain module: `users`
+  - ObjectType (`User`)
+  - Queries (`users`, `user`)
+  - Mutation (`createUser`)
+
+**Backend Architecture Progress**
+
+```text
+apps/api/src/
+  prisma/        # database layer (Prisma)
+  users/         # first domain module
+  health/        # health check
+  common/        # shared config/utils
+```
+
+**Database**
+
+```text
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+```
+
+**Prisma Integration (NestJS)**
+
+- Prisma wrapped in a dedicated service
+- Global module for easy injection
+- Clean separation: infra layer vs domain layer
+
+**GraphQL (Code-first)**
+
+```GraphQL
+query {
+  users {
+    id
+    email
+    name
+  }
+}
+```
+
+Example mutation:
+
+```GraphQL
+mutation {
+  createUser(
+    input: {
+      email: "roman@example.com"
+      name: "Roman"
+    }
+  ) {
+    id
+    email
+    name
+  }
+}
+```
+
+**Key Learnings**
+
+- Difference between **schema generation vs migration execution**
+- Prisma + Docker connection flow
+- NestJS + Prisma integration pattern
+- GraphQL code-first type limitations (explicit types required)
+- Apollo Server CSRF behavior (modern setup vs legacy playground)
+
+**Decisions**
+
+- Prisma downgraded to v5 (stable, production-ready)
+- Avoided Prisma v7 experimental config (`prisma.config.ts`)
+- Used cuid() for IDs (better for distributed systems than numeric IDs)
+
+**Result**
+
+A working backend slice with:
+
+- real database
+- real GraphQL API
+- first domain module
+- clean architecture foundation

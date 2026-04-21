@@ -3,9 +3,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'node:path';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { validateEnv } from './common/config/env.validation';
 import { HealthModule } from './health/health.module';
-import { HelloModule } from './hello/hello.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -16,11 +18,13 @@ import { HelloModule } from './hello/hello.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'apps/api/src/schema.gql'),
-      playground: true,
       sortSchema: true,
+      playground: false,
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
+    PrismaModule,
     HealthModule,
-    HelloModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
