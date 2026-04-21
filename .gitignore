@@ -1,6 +1,8 @@
 # node
 node_modules/
 
+.pnpm-store
+
 # build
 dist/
 .next/
@@ -26,3 +28,6 @@ prisma/dev.db
 
 # coverage
 coverage/
+
+# Generated files
+apps/api/src/schema.gql
