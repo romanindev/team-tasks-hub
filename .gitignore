@@ -1,0 +1,28 @@
+# node
+node_modules/
+
+# build
+dist/
+.next/
+out/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# logs
+*.log
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# prisma
+prisma/dev.db
+
+# coverage
+coverage/
