@@ -363,3 +363,51 @@ A working backend slice with:
 - real GraphQL API
 - first domain module
 - clean architecture foundation
+
+## Day 3 — Authentication (JWT)
+
+Implemented:
+
+- User registration with password hashing (`bcrypt`)
+- Login with credential validation
+- JWT-based authentication
+- JWT strategy using `passport-jwt`
+- GraphQL Auth Guard (`GqlAuthGuard`)
+- `@CurrentUser()` decorator
+- Protected resolvers
+- `currentUser` query
+
+**Security**
+
+- Passwords are hashed before storing
+- Invalid credentials return generic error (no info leakage)
+- JWT payload is minimal (`sub`, `email`)
+- Auth context uses `AuthUser` (no DB leakage)
+
+**Architecture Decisions**
+
+- Separated `AuthModule` from `UsersModule`
+- Introduced `AuthUser` (instead of exposing Prisma types)
+- Resolver → Service → DB separation
+- JWT validation handled in `JwtStrategy`
+- Guards handle authorization, services handle data
+
+**Configuration**
+
+- Environment variables:
+  - `JWT_SECRET`
+  - `JWT_EXPIRES_IN`
+- Centralized config via:
+  - `ConfigModule`
+  - `env.validation.ts`
+  - `configuration.ts`
+- `JwtModule.registerAsync` with `ConfigService`
+
+**Tested Flow**
+
+- `register` → creates user + returns token
+- `login` → returns token for valid credentials
+- `currentUser`:
+  - ❌ fails without token
+  - ✅ works with `Authorization: Bearer <token>`
+- Protected queries require authentication

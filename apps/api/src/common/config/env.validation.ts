@@ -1,5 +1,10 @@
 import { plainToInstance } from 'class-transformer';
-import { IsNumberString, IsString, validateSync } from 'class-validator';
+import {
+  IsNumberString,
+  IsString,
+  validateSync,
+  MinLength,
+} from 'class-validator';
 
 class EnvironmentVariables {
   @IsNumberString()
@@ -7,6 +12,13 @@ class EnvironmentVariables {
 
   @IsString()
   DATABASE_URL!: string;
+
+  @IsString()
+  @MinLength(10)
+  JWT_SECRET!: string;
+
+  @IsString()
+  JWT_EXPIRES_IN!: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {
